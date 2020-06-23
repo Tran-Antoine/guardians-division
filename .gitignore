@@ -1,0 +1,5 @@
+.gradle
+.idea
+*.dll
+*.dylib
+*.class

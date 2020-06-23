@@ -1,0 +1,5 @@
+group 'net.starype.gd.server'
+
+dependencies {
+    compile project(':api')
+}

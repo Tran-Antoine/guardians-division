@@ -1,0 +1,6 @@
+rootProject.name = 'Guardians Division'
+include 'api'
+include 'client'
+include 'server'
+include 'server_manager'
+

@@ -1,0 +1,5 @@
+group 'net.starype.gd.server_manager'
+
+dependencies {
+    compile project(':server')
+}

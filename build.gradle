@@ -1,0 +1,31 @@
+subprojects {
+    
+    apply plugin: 'java'
+    version 'alpha'
+
+    sourceCompatibility = 1.8
+
+    def jme_version = '3.3.2-stable'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        implementation 'org.jmonkeyengine:jme3-core:' + jme_version
+        implementation 'org.jmonkeyengine:jme3-desktop:' + jme_version
+        runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jme_version
+    }
+    
+    clean.dependsOn('cleanDLLs', 'cleanDyLibs')
+    
+    task cleanDLLs(type: Delete) {
+        delete fileTree(dir: '.', include: '*.dll')
+    }
+    
+    task cleanDyLibs(type: Delete) {
+        delete fileTree(dir: '.', include: '*.dylib')
+    }
+}
