@@ -3,3 +3,7 @@
 *.dll
 *.dylib
 *.class
+api/out
+client/out
+server/out
+server_manager/out
