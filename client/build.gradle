@@ -2,4 +2,5 @@ group 'net.starype.gd.client'
 
 dependencies {
     compile project(':api')
+    compile "com.simsilica:zay-es:1.2.1"
 }
