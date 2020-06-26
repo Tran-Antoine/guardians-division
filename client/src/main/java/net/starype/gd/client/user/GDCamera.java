@@ -1,0 +1,111 @@
+package net.starype.gd.client.user;
+
+import com.jme3.app.SimpleApplication;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+
+/**
+ * @author Askigh
+ *
+ * Sets up a basic camera replacing {@link com.jme3.input.FlyByCamera}
+ */
+public class GDCamera implements AnalogListener {
+
+    private Camera source;
+    private Vector3f initialUp;
+    private InputManager inputManager;
+
+    private int sensitivity = 600;
+    private int fov = 70;
+    private static final String[] MAPPINGS = {"left", "right", "top", "bottom"};
+
+    public GDCamera(SimpleApplication main, Camera source) {
+        this.source = source;
+        initialUp = source.getUp().clone();
+        inputManager = main.getInputManager();
+    }
+
+    public void initMappings() {
+
+        inputManager.addMapping("left", new MouseAxisTrigger(MouseInput.AXIS_X, true));
+        inputManager.addMapping("right", new MouseAxisTrigger(MouseInput.AXIS_X, false));
+        inputManager.addMapping("top", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+        inputManager.addMapping("bottom", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+        inputManager.addMapping("esc", new KeyTrigger(KeyInput.KEY_ESCAPE));
+
+        inputManager.addListener((ActionListener) this::onEscapePressed, "esc");
+        inputManager.addListener(this, MAPPINGS);
+    }
+
+    @Override
+    public void onAnalog(String name, float value, float tpf) {
+
+        if(inputManager.isCursorVisible()) {
+            return;
+        }
+
+        switch (name) {
+            case "left":
+                rotateCamera(value * tpf, initialUp);
+                break;
+            case "right":
+                rotateCamera(-value * tpf, initialUp);
+                break;
+            case "top":
+                rotateCamera(-value * tpf, source.getLeft());
+                break;
+            case "bottom":
+                rotateCamera(value * tpf, source.getLeft());
+                break;
+        }
+    }
+
+    // Code from com.jme3.input.FlyByCamera
+    private void rotateCamera(float value, Vector3f axis) {
+
+        Matrix3f mat = new Matrix3f();
+        mat.fromAngleNormalAxis(sensitivity * value, axis);
+
+        Vector3f up = source.getUp();
+        Vector3f left = source.getLeft();
+        Vector3f dir = source.getDirection();
+
+        mat.mult(up, up);
+        mat.mult(left, left);
+        mat.mult(dir, dir);
+
+        Quaternion q = new Quaternion();
+        q.fromAxes(left, up, dir);
+        q.normalizeLocal();
+
+        source.setAxes(q);
+    }
+
+    public Camera getSource() { return source; }
+
+    public int getSensitivity() { return sensitivity; }
+    public void setSensitivity(int sensitivity) { this.sensitivity = sensitivity; }
+    public int getFov() { return fov; }
+
+    public void changeFOV(int fov) {
+        this.fov = fov;
+        source.setFrustumPerspective(fov, (float) source.getWidth() / source.getHeight(), 0.001f, 100);
+        System.out.println(fov);
+    }
+
+    private void onEscapePressed(String name, boolean keyPressed, float tpf) {
+        if(!keyPressed) {
+            return;
+        }
+        inputManager.setCursorVisible(!inputManager.isCursorVisible());
+    }
+}
