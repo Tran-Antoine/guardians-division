@@ -33,9 +33,10 @@ public class GuardiansDivisionClient extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        disableDefaults();
+        //disableDefaults();
         attachStates();
-        setUpCamera();
+        flyCam.setMoveSpeed(10);
+        //setUpCamera();
         TemporaryRawModelCalls.createGameObjects(entityData, assetManager);
     }
 
@@ -53,7 +54,7 @@ public class GuardiansDivisionClient extends SimpleApplication {
     }
 
     private void setUpCamera() {
-        GDCamera newCam = new GDCamera(this, cam);
+        GDCamera newCam = new GDCamera(inputManager, cam);
         newCam.changeFOV(100);
         newCam.setSensitivity(400);
         newCam.enable();

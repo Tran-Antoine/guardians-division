@@ -19,8 +19,8 @@ public class TemporaryRawModelCalls {
     private static final float FLOOR_LENGTH = 40;
     private static final float PILLARS_COUNT_SQRT = 10;
     private static final float SPREADING_FACTOR = 0.8f;
-    private static final float MINIMAL_PILLAR_WIDTH = 0.4f;
-    private static final float MINIMAL_PILLAR_HEIGHT = 0.4f;
+    private static final float MINIMAL_PILLAR_WIDTH = 0.8f;
+    private static final float MINIMAL_PILLAR_HEIGHT = 0.8f;
 
     public static void createGameObjects(EntityData entityData, AssetManager assetManager) {
 
@@ -94,14 +94,15 @@ public class TemporaryRawModelCalls {
         center.addLocal(
                 (random.nextFloat() * 2 * randomMargin) - randomMargin,
                 (random.nextFloat() * 2 * randomMargin) - randomMargin);
-        float width = 0.7f * random.nextFloat() + MINIMAL_PILLAR_WIDTH;
-        float height = (float) Math.pow(Math.E, 2 * random.nextFloat()) - 1 + MINIMAL_PILLAR_HEIGHT;
+        float width = 1.4f * random.nextFloat() + MINIMAL_PILLAR_WIDTH;
+        float height = (float) Math.pow(4, 2 * random.nextFloat()) - 1 + MINIMAL_PILLAR_HEIGHT;
         builder.createPillar(center, width, height, base, top);
     }
 
     private static Vector2f toVector(List<Float> values) {
         return new Vector2f(
                 values.get(0),
-                values.get(1));
+                values.get(1)
+        );
     }
 }

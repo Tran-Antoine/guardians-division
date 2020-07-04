@@ -1,6 +1,5 @@
 package net.starype.gd.client.user;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -30,10 +29,10 @@ public class GDCamera implements AnalogListener {
     private int fov = 70;
     private static final String[] MAPPINGS = {"left", "right", "top", "bottom"};
 
-    public GDCamera(SimpleApplication main, Camera source) {
+    public GDCamera(InputManager inputManager, Camera source) {
+        this.inputManager = inputManager;
         this.source = source;
         initialUp = source.getUp().clone();
-        inputManager = main.getInputManager();
     }
 
     /**

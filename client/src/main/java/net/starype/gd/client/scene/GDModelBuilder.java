@@ -31,7 +31,7 @@ public class GDModelBuilder {
         material.setTexture("ColorMap", tex);
 
         Mesh mesh = new Quad(floorLength, floorLength);
-        mesh.scaleTextureCoordinates(new Vector2f(0.25f * floorLength, 0.25f * floorLength));
+        mesh.scaleTextureCoordinates(new Vector2f(0.5f * floorLength, 0.5f * floorLength));
 
         EntityId entity = source.createEntity();
         source.setComponents(entity,
@@ -41,13 +41,13 @@ public class GDModelBuilder {
 
     public void createPillar(Vector2f position, float width, float height, String baseTexture, String topTexture) {
         float ratio = 0.98f;
-        Vector3f worldPosition = new Vector3f(position.x, height/2, position.y);
-        createBox(worldPosition, width, ratio * height, baseTexture, true);
-        createBox(worldPosition.add(0, height, 0), width, (1 - ratio) * height, topTexture, false);
+        Vector3f basePosition = new Vector3f(position.x, ratio*height/2, position.y);
+        createBox(basePosition, width, ratio * height, baseTexture, true);
+        createBox(basePosition.add(0, height/2, 0), width, (1 - ratio) * height, topTexture, false);
     }
 
     private void createBox(Vector3f position, float width, float height, String texture, boolean scale) {
-        Mesh box = new Box(width, height, width);
+        Mesh box = new Box(width/2, height/2, width/2);
         Texture tex = assetManager.loadTexture("assets/"+texture);
         tex.setWrap(WrapMode.Repeat);
         if(scale) box.scaleTextureCoordinates(new Vector2f(width, height));
