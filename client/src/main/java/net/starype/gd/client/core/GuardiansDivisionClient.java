@@ -6,9 +6,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.base.DefaultEntityData;
-import net.starype.gd.client.scene.FlatTerrain;
 import net.starype.gd.client.scene.PositionComponent;
 import net.starype.gd.client.scene.ShapeComponent;
+import net.starype.gd.client.scene.TemporaryRawModelCalls;
 import net.starype.gd.client.scene.Visualizer;
 import net.starype.gd.client.user.GDCamera;
 
@@ -33,13 +33,16 @@ public class GuardiansDivisionClient extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-
         disableDefaults();
+        attachStates();
         setUpCamera();
+        TemporaryRawModelCalls.createGameObjects(entityData, assetManager);
+    }
 
-        stateManager.attach(new Visualizer(rootNode, entityData.getEntities(ShapeComponent.class, PositionComponent.class)));
-
-        FlatTerrain.create(entityData, assetManager);
+    private void attachStates() {
+        stateManager.attach(new Visualizer(
+                rootNode,
+                entityData.getEntities(ShapeComponent.class, PositionComponent.class)));
     }
 
     private void disableDefaults() {
@@ -51,8 +54,9 @@ public class GuardiansDivisionClient extends SimpleApplication {
 
     private void setUpCamera() {
         GDCamera newCam = new GDCamera(this, cam);
-        newCam.changeFOV(70);
-        newCam.initMappings();
-        cam.setLocation(new Vector3f(0, 10, 0));
+        newCam.changeFOV(100);
+        newCam.setSensitivity(400);
+        newCam.enable();
+        cam.setLocation(new Vector3f(0, 5, 0));
     }
 }

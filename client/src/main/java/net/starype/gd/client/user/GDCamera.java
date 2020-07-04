@@ -14,9 +14,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 
 /**
- * @author Askigh
+ * @author Antoine Tran
  *
- * Sets up a basic camera replacing {@link com.jme3.input.FlyByCamera}
+ * Sets up a basic camera replacing {@link com.jme3.input.FlyByCamera}. <br>
+ * GDCamera adds the four mouse axis mappings, as well as the ESC key, changing the visibility of the cursor.
+ * The camera does not rotate as long as the cursor is visible (similarly to some sort of pause menu)
  */
 public class GDCamera implements AnalogListener {
 
@@ -34,7 +36,10 @@ public class GDCamera implements AnalogListener {
         inputManager = main.getInputManager();
     }
 
-    public void initMappings() {
+    /**
+     * Adds all the necessary mappings then register the camera as a listener
+     */
+    public void enable() {
 
         inputManager.addMapping("left", new MouseAxisTrigger(MouseInput.AXIS_X, true));
         inputManager.addMapping("right", new MouseAxisTrigger(MouseInput.AXIS_X, false));
@@ -96,14 +101,13 @@ public class GDCamera implements AnalogListener {
     public void setSensitivity(int sensitivity) { this.sensitivity = sensitivity; }
     public int getFov() { return fov; }
 
-    public void changeFOV(int fov) {
-        this.fov = fov;
-        source.setFrustumPerspective(fov, (float) source.getWidth() / source.getHeight(), 0.001f, 100);
-        System.out.println(fov);
+    public void changeFOV(int newFov) {
+        this.fov = newFov;
+        source.setFrustumPerspective(newFov, (float) source.getWidth() / source.getHeight(), 0.001f, 100);
     }
 
     private void onEscapePressed(String name, boolean keyPressed, float tpf) {
-        if(!keyPressed) {
+        if(!keyPressed || !name.equals("esc")) {
             return;
         }
         inputManager.setCursorVisible(!inputManager.isCursorVisible());

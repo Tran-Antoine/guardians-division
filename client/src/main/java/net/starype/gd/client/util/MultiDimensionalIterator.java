@@ -6,14 +6,14 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class SpaceScanner {
+public class MultiDimensionalIterator {
 
     private Iteration top = null;
     private List<Consumer<List<Float>>> actions;
     private Set<Predicate<List<Float>>> filters;
     private List<Float> shift;
 
-    public SpaceScanner() {
+    public MultiDimensionalIterator() {
         this.actions = new ArrayList<>();
         this.filters = new HashSet<>();
         this.shift = new ArrayList<>();
@@ -149,13 +149,13 @@ public class SpaceScanner {
 
     public static class Builder {
 
-        private SpaceScanner scanner;
+        private MultiDimensionalIterator scanner;
 
         public Builder() {
-            this.scanner = new SpaceScanner();
+            this.scanner = new MultiDimensionalIterator();
         }
 
-        public SpaceScanner build() {
+        public MultiDimensionalIterator build() {
             return scanner;
         }
 
