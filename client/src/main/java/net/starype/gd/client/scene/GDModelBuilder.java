@@ -2,6 +2,7 @@ package net.starype.gd.client.scene;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -24,11 +25,12 @@ public class GDModelBuilder {
         this.floorLength = floorLength;
     }
 
-    public void createTexturedFlatSurface(Vector3f position, Vector3f rotation, String textureName) {
+    public void createTexturedPlane(Vector3f position, Vector3f rotation, String textureName) {
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         Texture tex = assetManager.loadTexture("assets/"+textureName);
         tex.setWrap(WrapMode.Repeat);
         material.setTexture("ColorMap", tex);
+        material.setColor("Color", ColorRGBA.Cyan);
 
         Mesh mesh = new Quad(floorLength, floorLength);
         mesh.scaleTextureCoordinates(new Vector2f(0.5f * floorLength, 0.5f * floorLength));
@@ -36,7 +38,7 @@ public class GDModelBuilder {
         EntityId entity = source.createEntity();
         source.setComponents(entity,
                 new PositionComponent(position, rotation),
-                new ShapeComponent("surface", mesh, material));
+                new ShapeComponent("plane", mesh, material));
     }
 
     public void createPillar(Vector2f position, float width, float height, String baseTexture, String topTexture) {
@@ -51,8 +53,12 @@ public class GDModelBuilder {
         Texture tex = assetManager.loadTexture("assets/"+texture);
         tex.setWrap(WrapMode.Repeat);
         if(scale) box.scaleTextureCoordinates(new Vector2f(width, height));
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setTexture("ColorMap", tex);
+        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        mat.setTexture("DiffuseMap", tex);
+        /*mat.setBoolean("UseMaterialColors",true);
+        mat.setColor("Diffuse", new ColorRGBA(0.91f, 0.91f, 0.741f, 1));  // minimum material color
+        mat.setColor("Specular", ColorRGBA.White); // for shininess
+        mat.setFloat("Shininess", 80f);*/
 
         EntityId entity = source.createEntity();
         source.setComponents(entity,

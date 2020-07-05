@@ -16,6 +16,7 @@ subprojects {
     dependencies {
         implementation 'org.jmonkeyengine:jme3-core:' + jme_version
         implementation 'org.jmonkeyengine:jme3-desktop:' + jme_version
+        implementation 'org.jmonkeyengine:jme3-effects:' + jme_version
         runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jme_version
     }
     

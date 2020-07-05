@@ -1,9 +1,16 @@
 package net.starype.gd.client.scene;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.ssao.SSAOFilter;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.simsilica.es.EntityData;
 import net.starype.gd.client.util.MultiDimensionalIterator;
 
@@ -28,34 +35,34 @@ public class TemporaryRawModelCalls {
 
         float corner = builder.floorLength() / 2;
 
-        builder.createTexturedFlatSurface(
+        builder.createTexturedPlane(
                 new Vector3f(-corner,0, corner),
                 new Vector3f(-FastMath.HALF_PI, 0, 0),
                 "carpet_1.jpg");
 
-        builder.createTexturedFlatSurface(
+        builder.createTexturedPlane(
                 new Vector3f(-corner, 2*corner, -corner),
                 new Vector3f(FastMath.HALF_PI, 0, 0),
                 "carpet_1.jpg"
         );
 
         String wallTextureName = "carpet_0.jpg";
-        builder.createTexturedFlatSurface(
+        builder.createTexturedPlane(
                 new Vector3f(-corner, 0, -corner),
                 new Vector3f(),
                 wallTextureName);
 
-        builder.createTexturedFlatSurface(
+        builder.createTexturedPlane(
                 new Vector3f(corner, 0, -corner),
                 new Vector3f(0, -FastMath.HALF_PI, 0),
                 wallTextureName);
 
-        builder.createTexturedFlatSurface(
+        builder.createTexturedPlane(
                 new Vector3f(-corner,0,corner),
                 new Vector3f(0, FastMath.HALF_PI, 0),
                 wallTextureName);
 
-        builder.createTexturedFlatSurface(
+        builder.createTexturedPlane(
                 new Vector3f(corner, 0, corner),
                 new Vector3f(0, FastMath.PI, 0),
                 wallTextureName);
@@ -104,5 +111,20 @@ public class TemporaryRawModelCalls {
                 values.get(0),
                 values.get(1)
         );
+    }
+
+    public static void createLights(AssetManager assetManager, Node rootNode, ViewPort viewPort) {
+        DirectionalLight dl = new DirectionalLight();
+        dl.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
+        AmbientLight al = new AmbientLight();
+        al.setColor(new ColorRGBA(0.91f, 0.91f, 0.791f, 1));
+
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        SSAOFilter ssaoFilter = new SSAOFilter(4, 20f, 0.35f, 0.61f);
+        fpp.addFilter(ssaoFilter);
+        viewPort.addProcessor(fpp);
+
+        rootNode.addLight(al);
+        rootNode.addLight(dl);
     }
 }

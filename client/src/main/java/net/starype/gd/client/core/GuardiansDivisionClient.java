@@ -25,19 +25,21 @@ public class GuardiansDivisionClient extends SimpleApplication {
 
         super.setShowSettings(false);
         AppSettings settings = new AppSettings(true);
-        settings.setWidth(1500);
-        settings.setHeight(900);
+        settings.setWidth(1000);
+        settings.setHeight(600);
+        settings.setResizable(true);
+        settings.setTitle("Guardians Division");
         super.setSettings(settings);
         super.start();
     }
 
     @Override
     public void simpleInitApp() {
-        //disableDefaults();
+        disableDefaults();
         attachStates();
-        flyCam.setMoveSpeed(10);
-        //setUpCamera();
+        setUpCamera();
         TemporaryRawModelCalls.createGameObjects(entityData, assetManager);
+        TemporaryRawModelCalls.createLights(assetManager, rootNode, viewPort);
     }
 
     private void attachStates() {
@@ -56,7 +58,7 @@ public class GuardiansDivisionClient extends SimpleApplication {
     private void setUpCamera() {
         GDCamera newCam = new GDCamera(inputManager, cam);
         newCam.changeFOV(100);
-        newCam.setSensitivity(400);
+        newCam.setSensitivity(30);
         newCam.enable();
         cam.setLocation(new Vector3f(0, 5, 0));
     }

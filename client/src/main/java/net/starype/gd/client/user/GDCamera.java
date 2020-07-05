@@ -25,7 +25,7 @@ public class GDCamera implements AnalogListener {
     private Vector3f initialUp;
     private InputManager inputManager;
 
-    private int sensitivity = 600;
+    private int sensitivity = 30;
     private int fov = 70;
     private static final String[] MAPPINGS = {"left", "right", "top", "bottom"};
 
@@ -59,16 +59,16 @@ public class GDCamera implements AnalogListener {
 
         switch (name) {
             case "left":
-                rotateCamera(value * tpf, initialUp);
+                rotateCamera(value/10, initialUp);
                 break;
             case "right":
-                rotateCamera(-value * tpf, initialUp);
+                rotateCamera(-value/10, initialUp);
                 break;
             case "top":
-                rotateCamera(-value * tpf, source.getLeft());
+                rotateCamera(-value/10, source.getLeft());
                 break;
             case "bottom":
-                rotateCamera(value * tpf, source.getLeft());
+                rotateCamera(value/10, source.getLeft());
                 break;
         }
     }
