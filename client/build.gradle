@@ -2,4 +2,14 @@ group 'net.starype.gd.client'
 
 dependencies {
     compile project(':api')
+    compile "com.simsilica:zay-es:1.2.1"
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'net.starype.gd.client.core.GuardiansDivisionClient'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
