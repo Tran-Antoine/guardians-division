@@ -1,7 +1,8 @@
 package net.starype.gd.physics;
 
-import com.jme3.app.state.AbstractAppState;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class PhysicalEntityHandler extends AbstractAppState {
+public class PhysicalEntityHandler implements PhysicsTickListener {
 
     private EntityData source;
     private EntitySet entities;
@@ -25,11 +26,29 @@ public class PhysicalEntityHandler extends AbstractAppState {
     private Map<EntityId, PhysicsControl> idMap;
     private PhysicsSpace space;
 
-    public PhysicalEntityHandler(EntityData source, PhysicsSpace space) {
+    public PhysicalEntityHandler(EntityData source, BulletAppState bulletState) {
+
         this.source = source;
         this.entities = source.getEntities(PhysicsComponent.class);
         this.idMap = new HashMap<>();
-        this.space = space;
+        this.space = bulletState.getPhysicsSpace();
+    }
+
+    public void enable() {
+        space.addTickListener(this);
+    }
+
+    public void disable() {
+        space.removeTickListener(this);
+    }
+
+    @Override
+    public void prePhysicsTick(PhysicsSpace space, float tpf) {
+        if(entities.applyChanges()) {
+            addToSpace(entities.getAddedEntities());
+            updateShape(entities.getChangedEntities());
+            removeFromSpace(entities.getRemovedEntities());
+        }
     }
 
     public void addBoxEntity(Vector3f extent, float mass) {
@@ -47,18 +66,9 @@ public class PhysicalEntityHandler extends AbstractAppState {
         source.setComponent(entity, new PhysicsComponent(body));
     }
 
-    @Override
-    public void update(float tpf) {
-        if(entities.applyChanges()) {
-            addToSpace(entities.getAddedEntities());
-            updateShape(entities.getChangedEntities());
-            removeFromSpace(entities.getRemovedEntities());
-        }
-    }
-
     private void addToSpace(Set<Entity> addedEntities) {
         for(Entity entity : addedEntities) {
-            space.add(idMap.get(entity.getId()));
+            space.add(entity.get(PhysicsComponent.class).getControl());
         }
     }
 
@@ -77,4 +87,8 @@ public class PhysicalEntityHandler extends AbstractAppState {
             space.remove(idMap.get(entity.getId()));
         }
     }
+
+
+    @Override
+    public void physicsTick(PhysicsSpace space, float tpf) { }
 }
