@@ -22,7 +22,6 @@ public class GuardiansDivisionClient extends SimpleApplication {
     private GuardiansDivisionClient() {
 
         entityData = new DefaultEntityData();
-
         super.setShowSettings(false);
         AppSettings settings = new AppSettings(true);
         settings.setWidth(1000);

@@ -17,8 +17,9 @@ import com.simsilica.es.EntitySet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
-public class PhysicalEntityHandler implements PhysicsTickListener {
+public class SpaceManager implements PhysicsTickListener {
 
     private EntityData source;
     private EntitySet entities;
@@ -26,7 +27,7 @@ public class PhysicalEntityHandler implements PhysicsTickListener {
     private Map<EntityId, PhysicsControl> idMap;
     private PhysicsSpace space;
 
-    public PhysicalEntityHandler(EntityData source, BulletAppState bulletState) {
+    public SpaceManager(EntityData source, BulletAppState bulletState) {
 
         this.source = source;
         this.entities = source.getEntities(PhysicsComponent.class);
@@ -51,24 +52,31 @@ public class PhysicalEntityHandler implements PhysicsTickListener {
         }
     }
 
-    public void addBoxEntity(Vector3f extent, float mass) {
-        addEntity(new BoxCollisionShape(extent), mass);
+    public void addBoxEntity(Vector3f extent, float mass, Vector3f initialPosition) {
+        addEntity(new BoxCollisionShape(extent), mass, initialPosition);
     }
 
-    public void addSphereEntity(float radius, float mass) {
-        addEntity(new SphereCollisionShape(radius), mass);
+    public void addSphereEntity(float radius, float mass, Vector3f initialPosition) {
+        addEntity(new SphereCollisionShape(radius), mass, initialPosition);
     }
 
-    private void addEntity(CollisionShape shape, float mass) {
+    public void addEntity(CollisionShape shape, float mass, Vector3f initialPosition) {
+        RigidBodyControl body = new RigidBodyControl(shape, mass);
+        addEntity(body, initialPosition, body::setPhysicsLocation);
+    }
+
+    public void addEntity(PhysicsControl body, Vector3f initialPosition, Consumer<Vector3f> placement) {
         EntityId entity = source.createEntity();
-        PhysicsControl body = new RigidBodyControl(shape, mass);
         idMap.put(entity, body);
-        source.setComponent(entity, new PhysicsComponent(body));
+        source.setComponent(entity, new PhysicsComponent(body, initialPosition, placement));
     }
 
     private void addToSpace(Set<Entity> addedEntities) {
         for(Entity entity : addedEntities) {
-            space.add(entity.get(PhysicsComponent.class).getControl());
+            PhysicsComponent component = entity.get(PhysicsComponent.class);
+            PhysicsControl control = component.getControl();
+            space.add(control);
+            component.getPlacement().accept(component.getInitialPosition());
         }
     }
 

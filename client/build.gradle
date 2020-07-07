@@ -2,7 +2,6 @@ group 'net.starype.gd.client'
 
 dependencies {
     compile project(':physics')
-    compile "com.simsilica:zay-es:1.2.1"
 }
 
 task fatJar(type: Jar) {

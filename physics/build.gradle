@@ -1,9 +1,9 @@
-group 'net.starype.gd.api'
+group 'net.starype.gd.physics'
 
 def jme_version = '3.3.2-stable'
 
 dependencies {
     compile "com.simsilica:zay-es:1.2.1"
-    implementation 'org.jmonkeyengine:jme3-bullet:' + jme_version
+    compile 'org.jmonkeyengine:jme3-bullet:' + jme_version
     runtimeOnly 'org.jmonkeyengine:jme3-bullet-native:' + jme_version
 }
