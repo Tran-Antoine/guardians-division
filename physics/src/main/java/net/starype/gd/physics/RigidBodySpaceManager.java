@@ -17,9 +17,8 @@ import com.simsilica.es.EntitySet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
-public class SpaceManager implements PhysicsTickListener {
+public class RigidBodySpaceManager implements PhysicsTickListener {
 
     private EntityData source;
     private EntitySet entities;
@@ -27,10 +26,10 @@ public class SpaceManager implements PhysicsTickListener {
     private Map<EntityId, PhysicsControl> idMap;
     private PhysicsSpace space;
 
-    public SpaceManager(EntityData source, BulletAppState bulletState) {
+    public RigidBodySpaceManager(EntityData source, BulletAppState bulletState) {
 
         this.source = source;
-        this.entities = source.getEntities(PhysicsComponent.class);
+        this.entities = source.getEntities(RigidBodyComponent.class);
         this.idMap = new HashMap<>();
         this.space = bulletState.getPhysicsSpace();
     }
@@ -52,39 +51,38 @@ public class SpaceManager implements PhysicsTickListener {
         }
     }
 
-    public void addBoxEntity(Vector3f extent, float mass, Vector3f initialPosition) {
-        addEntity(new BoxCollisionShape(extent), mass, initialPosition);
+    public EntityId addBoxEntity(Vector3f extent, float mass, Vector3f initialPosition) {
+        return addEntity(new BoxCollisionShape(extent), mass, initialPosition);
     }
 
-    public void addSphereEntity(float radius, float mass, Vector3f initialPosition) {
-        addEntity(new SphereCollisionShape(radius), mass, initialPosition);
+    public EntityId addSphereEntity(float radius, float mass, Vector3f initialPosition) {
+        return addEntity(new SphereCollisionShape(radius), mass, initialPosition);
     }
 
-    public void addEntity(CollisionShape shape, float mass, Vector3f initialPosition) {
+    public EntityId addEntity(CollisionShape shape, float mass, Vector3f initialPosition) {
         RigidBodyControl body = new RigidBodyControl(shape, mass);
-        addEntity(body, initialPosition, body::setPhysicsLocation);
-    }
-
-    public void addEntity(PhysicsControl body, Vector3f initialPosition, Consumer<Vector3f> placement) {
         EntityId entity = source.createEntity();
         idMap.put(entity, body);
-        source.setComponent(entity, new PhysicsComponent(body, initialPosition, placement));
+        source.setComponent(entity, new RigidBodyComponent(body, initialPosition));
+        return entity;
     }
 
     private void addToSpace(Set<Entity> addedEntities) {
         for(Entity entity : addedEntities) {
-            PhysicsComponent component = entity.get(PhysicsComponent.class);
-            PhysicsControl control = component.getControl();
+            RigidBodyComponent component = entity.get(RigidBodyComponent.class);
+            RigidBodyControl control = component.getControl();
+
             space.add(control);
-            component.getPlacement().accept(component.getInitialPosition());
+            control.setPhysicsLocation(component.getInitialPosition());
         }
     }
 
     private void updateShape(Set<Entity> changedEntities) {
         for(Entity entity : changedEntities) {
             EntityId id = entity.getId();
-            space.remove(idMap.get(id));
-            PhysicsControl newControl = entity.get(PhysicsComponent.class).getControl();
+            space.remove(idMap.remove(id)); // get rid of the current shape stored in the map
+
+            PhysicsControl newControl = entity.get(RigidBodyComponent.class).getControl();
             idMap.put(id, newControl);
             space.add(newControl);
         }
@@ -92,7 +90,7 @@ public class SpaceManager implements PhysicsTickListener {
 
     private void removeFromSpace(Set<Entity> removedEntities) {
         for(Entity entity : removedEntities) {
-            space.remove(idMap.get(entity.getId()));
+            space.remove(idMap.remove(entity.getId()));
         }
     }
 

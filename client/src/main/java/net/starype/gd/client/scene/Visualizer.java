@@ -20,9 +20,9 @@ public class Visualizer extends AbstractAppState {
     private EntitySet entities;
     private Map<EntityId, Spatial> idMap;
 
-    public Visualizer(Node rootNode, EntitySet entities) {
+    public Visualizer(Node rootNode, EntityData entityData) {
         this.rootNode = rootNode;
-        this.entities = entities;
+        this.entities = entityData.getEntities(ShapeComponent.class, PositionComponent.class);
         this.idMap = new HashMap<>();
     }
 

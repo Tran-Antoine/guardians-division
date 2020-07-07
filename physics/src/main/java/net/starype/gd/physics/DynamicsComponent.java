@@ -3,12 +3,12 @@ package net.starype.gd.physics;
 import com.jme3.math.Vector3f;
 import com.simsilica.es.EntityComponent;
 
-public class VelocityComponent implements EntityComponent {
+public class DynamicsComponent implements EntityComponent {
 
     private Vector3f linearVelocity;
     private Vector3f angularVelocity;
 
-    public VelocityComponent(Vector3f linearVelocity, Vector3f angularVelocity) {
+    public DynamicsComponent(Vector3f linearVelocity, Vector3f angularVelocity) {
         this.linearVelocity = linearVelocity;
         this.angularVelocity = angularVelocity;
     }
