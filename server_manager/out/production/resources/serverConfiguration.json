@@ -1,0 +1,10 @@
+{
+  "serverManagerPort": 34300,
+  "serverJarPath": "changeHERE.jar",
+  "socketListenerPort": 34400,
+  "gameServersPortsRange": {
+    "minimal": 35000,
+    "maximal": 40000,
+    "nonUsable": []
+  }
+}
