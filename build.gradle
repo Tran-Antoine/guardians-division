@@ -1,6 +1,6 @@
 subprojects {
-    
     apply plugin: 'java'
+
     version 'alpha'
 
     sourceCompatibility = 1.8
@@ -14,9 +14,12 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.jmonkeyengine:jme3-core:' + jme_version
+        //JME3:
         implementation 'org.jmonkeyengine:jme3-desktop:' + jme_version
-        runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jme_version
+
+        //LOGGER:
+        compile 'org.slf4j:slf4j-api:2.0.0-alpha1'
+        runtime 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
     }
     
     clean.dependsOn('cleanDLLs', 'cleanDyLibs')
