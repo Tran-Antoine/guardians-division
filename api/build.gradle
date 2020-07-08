@@ -1,1 +1,5 @@
 group 'net.starype.gd.api'
+
+dependencies {
+    def jme_version = '3.3.2-stable'
+}
