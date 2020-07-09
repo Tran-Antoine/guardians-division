@@ -13,6 +13,8 @@ import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.es.EntitySet;
+import net.starype.gd.physics.component.InitialPositionComponent;
+import net.starype.gd.physics.component.RigidBodyComponent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class RigidBodySpaceManager implements PhysicsTickListener {
     public RigidBodySpaceManager(EntityData source, BulletAppState bulletState) {
 
         this.source = source;
-        this.entities = source.getEntities(RigidBodyComponent.class);
+        this.entities = source.getEntities(RigidBodyComponent.class, InitialPositionComponent.class);
         this.idMap = new HashMap<>();
         this.space = bulletState.getPhysicsSpace();
     }
@@ -63,17 +65,18 @@ public class RigidBodySpaceManager implements PhysicsTickListener {
         RigidBodyControl body = new RigidBodyControl(shape, mass);
         EntityId entity = source.createEntity();
         idMap.put(entity, body);
-        source.setComponent(entity, new RigidBodyComponent(body, initialPosition));
+        source.setComponents(entity,
+                new RigidBodyComponent(body),
+                new InitialPositionComponent(initialPosition, Vector3f.ZERO)); // TODO : add rotation
         return entity;
     }
 
     private void addToSpace(Set<Entity> addedEntities) {
         for(Entity entity : addedEntities) {
-            RigidBodyComponent component = entity.get(RigidBodyComponent.class);
-            RigidBodyControl control = component.getControl();
+            RigidBodyControl control = entity.get(RigidBodyComponent.class).getBody();
 
             space.add(control);
-            control.setPhysicsLocation(component.getInitialPosition());
+            control.setPhysicsLocation(entity.get(InitialPositionComponent.class).getLocation());
         }
     }
 
@@ -82,7 +85,7 @@ public class RigidBodySpaceManager implements PhysicsTickListener {
             EntityId id = entity.getId();
             space.remove(idMap.remove(id)); // get rid of the current shape stored in the map
 
-            PhysicsControl newControl = entity.get(RigidBodyComponent.class).getControl();
+            PhysicsControl newControl = entity.get(RigidBodyComponent.class).getBody();
             idMap.put(id, newControl);
             space.add(newControl);
         }

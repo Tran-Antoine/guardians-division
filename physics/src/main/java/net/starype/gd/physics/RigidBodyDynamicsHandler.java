@@ -7,6 +7,8 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntitySet;
+import net.starype.gd.physics.component.DynamicsComponent;
+import net.starype.gd.physics.component.RigidBodyComponent;
 
 import java.util.Set;
 
@@ -38,7 +40,7 @@ public class RigidBodyDynamicsHandler implements PhysicsTickListener {
 
     private void applyDynamics(Set<Entity> entities) {
         for(Entity entity : entities) {
-            RigidBodyControl body = entity.get(RigidBodyComponent.class).getControl();
+            RigidBodyControl body = entity.get(RigidBodyComponent.class).getBody();
             DynamicsComponent velComponent = entity.get(DynamicsComponent.class);
             body.setLinearVelocity(velComponent.getLinearVelocity());
             body.setAngularVelocity(velComponent.getAngularVelocity());

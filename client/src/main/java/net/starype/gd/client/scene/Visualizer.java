@@ -5,10 +5,13 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.simsilica.es.*;
+import com.simsilica.es.Entity;
+import com.simsilica.es.EntityData;
+import com.simsilica.es.EntityId;
+import com.simsilica.es.EntitySet;
+import net.starype.gd.physics.component.InitialPositionComponent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +25,7 @@ public class Visualizer extends AbstractAppState {
 
     public Visualizer(Node rootNode, EntityData entityData) {
         this.rootNode = rootNode;
-        this.entities = entityData.getEntities(ShapeComponent.class, PositionComponent.class);
+        this.entities = entityData.getEntities(ShapeComponent.class, InitialPositionComponent.class);
         this.idMap = new HashMap<>();
     }
 
@@ -67,16 +70,14 @@ public class Visualizer extends AbstractAppState {
     }
 
     private Spatial createAndRenderEntity(Entity entity) {
-        ShapeComponent shape = entity.get(ShapeComponent.class);
-        Spatial geometry = new Geometry(shape.getName(), shape.getShape());
-        geometry.setMaterial(shape.getMaterial());
+        Spatial geometry = entity.get(ShapeComponent.class).getShape();
         rootNode.attachChild(geometry);
         idMap.put(entity.getId(), geometry);
         return geometry;
     }
 
     private void placeEntity(Entity entity, Spatial geometry) {
-        PositionComponent position = entity.get(PositionComponent.class);
+        InitialPositionComponent position = entity.get(InitialPositionComponent.class);
         geometry.setLocalTranslation(position.getLocation());
         Vector3f rot = position.getRotation();
         geometry.setLocalRotation(new Quaternion().fromAngles(rot.x, rot.y, rot.z));

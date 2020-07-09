@@ -6,13 +6,11 @@ import com.jme3.math.Vector3f;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.es.base.DefaultEntityData;
-import net.starype.gd.client.scene.PositionComponent;
-import net.starype.gd.client.scene.ShapeComponent;
 import net.starype.gd.client.scene.TemporaryRawModelCalls;
 import net.starype.gd.client.scene.Visualizer;
+import net.starype.gd.physics.component.DynamicsComponent;
 import net.starype.gd.physics.RigidBodyDynamicsHandler;
 import net.starype.gd.physics.RigidBodySpaceManager;
-import net.starype.gd.physics.DynamicsComponent;
 
 public class SimplePhysicsTest extends SimpleApplication {
 
@@ -54,7 +52,7 @@ public class SimplePhysicsTest extends SimpleApplication {
     private void renderObjects(EntityData entityData) {
         stateManager.attach(new Visualizer(
                 rootNode,
-                entityData.getEntities(ShapeComponent.class, PositionComponent.class)));
+                entityData));
 
         TemporaryRawModelCalls.createGameObjects(entityData, assetManager);
         TemporaryRawModelCalls.createLights(assetManager, rootNode, viewPort);

@@ -1,14 +1,14 @@
-package net.starype.gd.client.scene;
+package net.starype.gd.physics.component;
 
 import com.jme3.math.Vector3f;
 import com.simsilica.es.EntityComponent;
 
-public class PositionComponent implements EntityComponent {
+public class InitialPositionComponent implements EntityComponent {
 
     private Vector3f location;
     private Vector3f rotation;
 
-    public PositionComponent(Vector3f location, Vector3f rotation) {
+    public InitialPositionComponent(Vector3f location, Vector3f rotation) {
         this.location = location;
         this.rotation = rotation;
     }

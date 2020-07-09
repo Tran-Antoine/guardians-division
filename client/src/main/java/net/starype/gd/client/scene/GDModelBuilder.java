@@ -5,13 +5,16 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
+import net.starype.gd.physics.component.InitialPositionComponent;
 
 public class GDModelBuilder {
 
@@ -37,8 +40,8 @@ public class GDModelBuilder {
 
         EntityId entity = source.createEntity();
         source.setComponents(entity,
-                new PositionComponent(position, rotation),
-                new ShapeComponent("plane", mesh, material));
+                new InitialPositionComponent(position, rotation),
+                new ShapeComponent(asSpatial("plane", mesh, material)));
     }
 
     public void createPillar(Vector2f position, float width, float height, String baseTexture, String topTexture) {
@@ -62,8 +65,14 @@ public class GDModelBuilder {
 
         EntityId entity = source.createEntity();
         source.setComponents(entity,
-                new PositionComponent(position, new Vector3f()),
-                new ShapeComponent("pillar", box, mat));
+                new InitialPositionComponent(position, new Vector3f()),
+                new ShapeComponent(asSpatial("pillar", box, mat)));
+    }
+
+    private Spatial asSpatial(String name, Mesh shape, Material material) {
+        Spatial geometry = new Geometry(name, shape);
+        geometry.setMaterial(material);
+        return geometry;
     }
 
     public float floorLength() {
