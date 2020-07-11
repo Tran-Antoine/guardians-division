@@ -1,4 +1,4 @@
-package net.starype.gd.physics;
+package net.starype.gd.physics.system;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -9,10 +9,7 @@ import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
-import com.simsilica.es.Entity;
-import com.simsilica.es.EntityData;
-import com.simsilica.es.EntityId;
-import com.simsilica.es.EntitySet;
+import com.simsilica.es.*;
 import net.starype.gd.physics.component.InitialPositionComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
 
@@ -20,21 +17,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class RigidBodySpaceManager implements PhysicsTickListener {
+public abstract class SpaceManager<T extends EntityComponent> implements PhysicsTickListener {
 
-    private EntityData source;
+    protected EntityData source;
     private EntitySet entities;
 
-    private Map<EntityId, PhysicsControl> idMap;
+    protected Map<EntityId, PhysicsControl> idMap;
     private PhysicsSpace space;
 
-    public RigidBodySpaceManager(EntityData source, BulletAppState bulletState) {
+    public SpaceManager(EntityData source, BulletAppState bulletState) {
 
         this.source = source;
-        this.entities = source.getEntities(RigidBodyComponent.class, InitialPositionComponent.class);
+        this.entities = source.getEntities(getBodyComponentType(), InitialPositionComponent.class);
         this.idMap = new HashMap<>();
         this.space = bulletState.getPhysicsSpace();
     }
+
+    protected abstract Class<T> getBodyComponentType();
+    protected abstract void setPosition(T component, Vector3f position);
+    protected abstract PhysicsControl getControlFrom(T component);
 
     public void enable() {
         space.addTickListener(this);
@@ -73,10 +74,10 @@ public class RigidBodySpaceManager implements PhysicsTickListener {
 
     private void addToSpace(Set<Entity> addedEntities) {
         for(Entity entity : addedEntities) {
-            RigidBodyControl control = entity.get(RigidBodyComponent.class).getBody();
-
+            T component = entity.get(getBodyComponentType());
+            PhysicsControl control = getControlFrom(component);
             space.add(control);
-            control.setPhysicsLocation(entity.get(InitialPositionComponent.class).getLocation());
+            setPosition(component, entity.get(InitialPositionComponent.class).getLocation());
         }
     }
 

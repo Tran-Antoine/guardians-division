@@ -6,7 +6,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.base.DefaultEntityData;
-import net.starype.gd.client.physics.SpatialPhysicsLinker;
 import net.starype.gd.client.scene.TemporaryRawModelCalls;
 import net.starype.gd.client.scene.Visualizer;
 import net.starype.gd.client.user.GDCamera;
@@ -42,7 +41,6 @@ public class GuardiansDivisionClient extends SimpleApplication {
 
     private void attachStates() {
         stateManager.attach(new Visualizer(rootNode, entityData));
-        stateManager.attach(new SpatialPhysicsLinker(entityData));
     }
 
     private void disableDefaults() {

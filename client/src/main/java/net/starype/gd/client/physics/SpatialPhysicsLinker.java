@@ -1,33 +1,36 @@
 package net.starype.gd.client.physics;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.bullet.control.PhysicsControl;
 import com.simsilica.es.*;
 import net.starype.gd.client.scene.ShapeComponent;
-import net.starype.gd.physics.component.BodyComponent;
 
 import java.util.Set;
 
-public class SpatialPhysicsLinker extends AbstractAppState {
+public abstract class SpatialPhysicsLinker<T extends EntityComponent> extends AbstractAppState {
 
     private EntitySet entities;
 
     public SpatialPhysicsLinker(EntityData entityData) {
-        entities = entityData.getEntities(BodyComponent.class, ShapeComponent.class);
+        entities = entityData.getEntities(getBodyComponentType(), ShapeComponent.class);
     }
+
+    protected abstract Class<T> getBodyComponentType();
+    protected abstract PhysicsControl getControlFrom(T component);
 
     @Override
     public void update(float tpf) {
         if(entities.applyChanges()) {
             link(entities.getAddedEntities());
-            // todo: add for changed and removed entities
+            // todo: add for changed and removed entities (if required)
         }
     }
 
     private void link(Set<Entity> addedEntities) {
         for(Entity entity : addedEntities) {
-            BodyComponent<?> bodyComponent = entity.get(BodyComponent.class);
+            PhysicsControl control = getControlFrom(entity.get(getBodyComponentType()));
             ShapeComponent shapeComponent = entity.get(ShapeComponent.class);
-            shapeComponent.getShape().addControl(bodyComponent.getBody());
+            shapeComponent.getShape().addControl(control);
         }
     }
 }

@@ -1,4 +1,4 @@
-package net.starype.gd.physics;
+package net.starype.gd.physics.system;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -7,7 +7,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntitySet;
-import net.starype.gd.physics.component.DynamicsComponent;
+import net.starype.gd.physics.component.RigidBodyDynamicsComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
 
 import java.util.Set;
@@ -18,7 +18,7 @@ public class RigidBodyDynamicsHandler implements PhysicsTickListener {
     private PhysicsSpace space;
 
     public RigidBodyDynamicsHandler(EntityData source, BulletAppState bulletAppState) {
-        this.entities = source.getEntities(RigidBodyComponent.class, DynamicsComponent.class);
+        this.entities = source.getEntities(RigidBodyComponent.class, RigidBodyDynamicsComponent.class);
         this.space = bulletAppState.getPhysicsSpace();
     }
 
@@ -41,9 +41,10 @@ public class RigidBodyDynamicsHandler implements PhysicsTickListener {
     private void applyDynamics(Set<Entity> entities) {
         for(Entity entity : entities) {
             RigidBodyControl body = entity.get(RigidBodyComponent.class).getBody();
-            DynamicsComponent velComponent = entity.get(DynamicsComponent.class);
-            body.setLinearVelocity(velComponent.getLinearVelocity());
-            body.setAngularVelocity(velComponent.getAngularVelocity());
+            RigidBodyDynamicsComponent dynamics = entity.get(RigidBodyDynamicsComponent.class);
+            body.setLinearVelocity(dynamics.getLinearVelocity());
+            body.setAngularVelocity(dynamics.getAngularVelocity());
+            body.applyCentralForce(dynamics.getCentralForce());
         }
     }
 
