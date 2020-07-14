@@ -4,9 +4,9 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.simsilica.es.EntityData;
 import net.starype.gd.physics.component.CharacterComponent;
 
-public class BetterCharacterLinker extends SpatialPhysicsLinker<CharacterComponent> {
+public class CharacterLinker extends SpatialPhysicsLinker<CharacterComponent> {
 
-    public BetterCharacterLinker(EntityData entityData) {
+    public CharacterLinker(EntityData entityData) {
         super(entityData);
     }
 
