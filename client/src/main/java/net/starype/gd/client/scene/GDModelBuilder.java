@@ -1,8 +1,12 @@
 package net.starype.gd.client.scene;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -14,7 +18,8 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
-import net.starype.gd.physics.component.InitialPositionComponent;
+import net.starype.gd.physics.component.PhysicsPositionComponent;
+import net.starype.gd.physics.component.RigidBodyComponent;
 
 public class GDModelBuilder {
 
@@ -38,10 +43,15 @@ public class GDModelBuilder {
         Mesh mesh = new Quad(floorLength, floorLength);
         mesh.scaleTextureCoordinates(new Vector2f(0.5f * floorLength, 0.5f * floorLength));
 
+        CollisionShape boxShape = new BoxCollisionShape(new Vector3f(floorLength/2, floorLength/2, 1));
+        RigidBodyControl control = new RigidBodyControl(boxShape, 0);
+
         EntityId entity = source.createEntity();
         source.setComponents(entity,
-                new InitialPositionComponent(position, rotation),
-                new ShapeComponent(asSpatial("plane", mesh, material)));
+                new SpatialPositionComponent(position, rotation),
+                new PhysicsPositionComponent(position.add(floorLength/2, -0.5f, -floorLength/2), rotation),
+                new ShapeComponent(asSpatial("plane", mesh, material)),
+                new RigidBodyComponent(control));
     }
 
     public void createPillar(Vector2f position, float width, float height, String baseTexture, String topTexture) {
@@ -65,7 +75,7 @@ public class GDModelBuilder {
 
         EntityId entity = source.createEntity();
         source.setComponents(entity,
-                new InitialPositionComponent(position, new Vector3f()),
+                new SpatialPositionComponent(position, Quaternion.ZERO),
                 new ShapeComponent(asSpatial("pillar", box, mat)));
     }
 

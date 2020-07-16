@@ -20,7 +20,7 @@ import net.starype.gd.client.scene.ShapeComponent;
 import net.starype.gd.client.scene.TemporaryRawModelCalls;
 import net.starype.gd.client.scene.Visualizer;
 import net.starype.gd.physics.component.CharacterComponent;
-import net.starype.gd.physics.component.InitialPositionComponent;
+import net.starype.gd.physics.component.PhysicsPositionComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
 import net.starype.gd.physics.system.CharacterDynamicsHandler;
 import net.starype.gd.physics.system.CharacterSpaceManager;
@@ -75,7 +75,6 @@ public class SimplePhysicsTest extends SimpleApplication {
 
         RigidBodyDynamicsHandler rigidDynamics = new RigidBodyDynamicsHandler(entityData, bulletAppState);
         CharacterDynamicsHandler characterDynamics = new CharacterDynamicsHandler(entityData, bulletAppState);
-
         rigidSpace.enable();
         rigidDynamics.enable();
         characterSpace.enable();
@@ -96,7 +95,7 @@ public class SimplePhysicsTest extends SimpleApplication {
         EntityId playerEntity = entityData.createEntity();
         entityData.setComponents(playerEntity,
                 new CharacterComponent(playerControl),
-                new InitialPositionComponent(new Vector3f(0, 3, 0), Vector3f.ZERO));
+                new PhysicsPositionComponent(new Vector3f(0, 3, 0), Vector3f.ZERO));
 
         InputComponentCreator inputCreator = stateManager.getState(InputComponentCreator.class);
         inputCreator.setEntityData(entityData, playerEntity);

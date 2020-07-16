@@ -8,9 +8,11 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.simsilica.es.*;
-import net.starype.gd.physics.component.InitialPositionComponent;
+import net.starype.gd.physics.component.AddedToSpaceComponent;
+import net.starype.gd.physics.component.PhysicsPositionComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
 
 import java.util.HashMap;
@@ -28,13 +30,15 @@ public abstract class SpaceManager<T extends EntityComponent> implements Physics
     public SpaceManager(EntityData source, BulletAppState bulletState) {
 
         this.source = source;
-        this.entities = source.getEntities(getBodyComponentType(), InitialPositionComponent.class);
+        this.entities = source.getEntities(getBodyComponentType(), PhysicsPositionComponent.class);
         this.idMap = new HashMap<>();
         this.space = bulletState.getPhysicsSpace();
     }
 
     protected abstract Class<T> getBodyComponentType();
     protected abstract void setPosition(T component, Vector3f position);
+    protected abstract void setRotation(T component, Quaternion rotation);
+
     protected abstract PhysicsControl getControlFrom(T component);
 
     public void enable() {
@@ -68,16 +72,21 @@ public abstract class SpaceManager<T extends EntityComponent> implements Physics
         idMap.put(entity, body);
         source.setComponents(entity,
                 new RigidBodyComponent(body),
-                new InitialPositionComponent(initialPosition, Vector3f.ZERO)); // TODO : add rotation
+                new PhysicsPositionComponent(initialPosition, Quaternion.ZERO)); // TODO : add rotation
         return entity;
     }
 
     private void addToSpace(Set<Entity> addedEntities) {
+        System.out.println("physics");
         for(Entity entity : addedEntities) {
             T component = entity.get(getBodyComponentType());
             PhysicsControl control = getControlFrom(component);
             space.add(control);
-            setPosition(component, entity.get(InitialPositionComponent.class).getLocation());
+            PhysicsPositionComponent position = entity.get(PhysicsPositionComponent.class);
+            System.out.println(position.getLocation());
+            setPosition(component, position.getLocation());
+            setRotation(component, position.getRotation());
+            source.setComponent(entity.getId(), new AddedToSpaceComponent());
         }
     }
 

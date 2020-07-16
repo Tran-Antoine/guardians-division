@@ -1,14 +1,19 @@
 package net.starype.gd.physics.component;
 
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.simsilica.es.EntityComponent;
 
-public class InitialPositionComponent implements EntityComponent {
+public abstract class InitialPositionComponent implements EntityComponent {
 
     private Vector3f location;
-    private Vector3f rotation;
+    private Quaternion rotation;
 
     public InitialPositionComponent(Vector3f location, Vector3f rotation) {
+        this(location, new Quaternion().fromAngles(rotation.x, rotation.y, rotation.z));
+    }
+
+    public InitialPositionComponent(Vector3f location, Quaternion rotation) {
         this.location = location;
         this.rotation = rotation;
     }
@@ -17,7 +22,7 @@ public class InitialPositionComponent implements EntityComponent {
         return location;
     }
 
-    public Vector3f getRotation() {
+    public Quaternion getRotation() {
         return rotation;
     }
 }

@@ -2,6 +2,7 @@ package net.starype.gd.physics.system;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.simsilica.es.EntityData;
 import net.starype.gd.physics.component.CharacterComponent;
@@ -21,6 +22,9 @@ public class CharacterSpaceManager extends SpaceManager<CharacterComponent> {
     protected void setPosition(CharacterComponent component, Vector3f position) {
         component.getBody().warp(position);
     }
+
+    @Override
+    protected void setRotation(CharacterComponent component, Quaternion rotation) { }
 
     @Override
     protected PhysicsControl getControlFrom(CharacterComponent component) {

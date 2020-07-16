@@ -2,14 +2,12 @@ package net.starype.gd.physics.system;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
-import net.starype.gd.physics.component.InitialPositionComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
 
 public class RigidBodySpaceManager extends SpaceManager<RigidBodyComponent> {
@@ -29,6 +27,11 @@ public class RigidBodySpaceManager extends SpaceManager<RigidBodyComponent> {
     }
 
     @Override
+    protected void setRotation(RigidBodyComponent component, Quaternion rotation) {
+        component.getBody().setPhysicsRotation(rotation);
+    }
+
+    @Override
     protected PhysicsControl getControlFrom(RigidBodyComponent component) {
         return component.getBody();
     }
@@ -39,15 +42,5 @@ public class RigidBodySpaceManager extends SpaceManager<RigidBodyComponent> {
 
     public EntityId addSphereEntity(float radius, float mass, Vector3f initialPosition) {
         return addEntity(new SphereCollisionShape(radius), mass, initialPosition);
-    }
-
-    public EntityId addEntity(CollisionShape shape, float mass, Vector3f initialPosition) {
-        RigidBodyControl body = new RigidBodyControl(shape, mass);
-        EntityId entity = source.createEntity();
-        idMap.put(entity, body);
-        source.setComponents(entity,
-                new RigidBodyComponent(body),
-                new InitialPositionComponent(initialPosition, Vector3f.ZERO)); // TODO : add rotation
-        return entity;
     }
 }

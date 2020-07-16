@@ -11,7 +11,8 @@ import com.jme3.scene.shape.Box;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import net.starype.gd.client.scene.ShapeComponent;
-import net.starype.gd.physics.component.InitialPositionComponent;
+import net.starype.gd.client.scene.SpatialPositionComponent;
+import net.starype.gd.physics.component.PhysicsPositionComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
 
 public class BasicShapesFactory {
@@ -25,7 +26,8 @@ public class BasicShapesFactory {
                 new BoxCollisionShape(new Vector3f(box.xExtent, box.yExtent, box.zExtent)), 80);
         EntityId entity = entityData.createEntity();
         entityData.setComponents(entity,
-                new InitialPositionComponent(position, Vector3f.ZERO),
+                new PhysicsPositionComponent(position, Vector3f.ZERO),
+                new SpatialPositionComponent(position, Vector3f.ZERO),
                 new ShapeComponent(geometry),
                 new RigidBodyComponent(control));
     }
