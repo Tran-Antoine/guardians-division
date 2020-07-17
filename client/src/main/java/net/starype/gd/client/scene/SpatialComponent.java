@@ -3,11 +3,11 @@ package net.starype.gd.client.scene;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.EntityComponent;
 
-public class ShapeComponent implements EntityComponent {
+public class SpatialComponent implements EntityComponent {
 
     private Spatial shape;
 
-    public ShapeComponent(Spatial shape) {
+    public SpatialComponent(Spatial shape) {
         this.shape = shape;
     }
 

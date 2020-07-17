@@ -10,7 +10,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
-import net.starype.gd.client.scene.ShapeComponent;
+import net.starype.gd.client.scene.SpatialComponent;
 import net.starype.gd.client.scene.SpatialPositionComponent;
 import net.starype.gd.physics.component.PhysicsPositionComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
@@ -28,7 +28,7 @@ public class BasicShapesFactory {
         entityData.setComponents(entity,
                 new PhysicsPositionComponent(position, Vector3f.ZERO),
                 new SpatialPositionComponent(position, Vector3f.ZERO),
-                new ShapeComponent(geometry),
+                new SpatialComponent(geometry),
                 new RigidBodyComponent(control));
     }
 }

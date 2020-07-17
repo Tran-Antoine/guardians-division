@@ -1,20 +1,17 @@
 package net.starype.gd.client.scene;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.math.*;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.simsilica.es.EntityData;
-import com.simsilica.es.EntityId;
 import net.starype.gd.client.util.MultiDimensionalIterator;
-import net.starype.gd.physics.component.PhysicsPositionComponent;
-import net.starype.gd.physics.component.RigidBodyComponent;
 
 import java.util.List;
 import java.util.Random;
@@ -35,51 +32,47 @@ public class TemporaryRawModelCalls {
 
         GDModelBuilder builder = new GDModelBuilder(assetManager, entityData, FLOOR_LENGTH);
 
-        float corner = builder.floorLength() / 2;
+        float corner = builder.floorLength() / 2 + 1;
 
         String floorTextureName = "carpet_1.jpg";
 
         builder.createTexturedPlane(
-                new Vector3f(-corner,0, corner),
-                new Vector3f(-FastMath.HALF_PI, 0, 0),
+                new Vector3f(0,-1, 0),
+                GDModelBuilder.BOTTOM_ROTATION,
                 floorTextureName
         );
 
-        /*builder.createTexturedPlane(
-                new Vector3f(-corner, 2*corner, -corner),
-                new Vector3f(FastMath.HALF_PI, 0, 0),
+        builder.createTexturedPlane(
+                new Vector3f(0, 2*corner - 1, 0),
+                GDModelBuilder.TOP_ROTATION,
                 floorTextureName
         );
 
         String wallTextureName = "carpet_0.jpg";
         builder.createTexturedPlane(
-                new Vector3f(-corner, 0, -corner),
-                new Vector3f(),
+                new Vector3f(0, corner - 1, -corner),
+                GDModelBuilder.BACK_ROTATION,
                 wallTextureName);
 
         builder.createTexturedPlane(
-                new Vector3f(corner, 0, -corner),
-                new Vector3f(0, -FastMath.HALF_PI, 0),
+                new Vector3f(corner, corner - 1, 0),
+                GDModelBuilder.LEFT_ROTATION,
                 wallTextureName);
 
         builder.createTexturedPlane(
-                new Vector3f(-corner,0,corner),
-                new Vector3f(0, FastMath.HALF_PI, 0),
+                new Vector3f(-corner, corner - 1, 0),
+                GDModelBuilder.RIGHT_ROTATION,
                 wallTextureName);
 
         builder.createTexturedPlane(
-                new Vector3f(corner, 0, corner),
-                new Vector3f(0, FastMath.PI, 0),
-                wallTextureName);*/
+                new Vector3f(0, corner - 1, corner),
+                GDModelBuilder.FRONT_ROTATION,
+                wallTextureName);
 
         String base = "carpet_2.jpg";
         String top = "carpet_3.jpg";
 
-        EntityId test = entityData.createEntity();
-        entityData.setComponents(test,
-                new RigidBodyComponent(new RigidBodyControl(new BoxCollisionShape(new Vector3f(1,1,1)))),
-                new PhysicsPositionComponent(new Vector3f(0, 10, 0), Quaternion.ZERO));
-        //createRandomPillars(base, top, builder.floorLength(), builder);
+        createRandomPillars(base, top, builder.floorLength(), builder);
     }
 
     private static void createRandomPillars(String base, String top, float floorLength, GDModelBuilder builder) {

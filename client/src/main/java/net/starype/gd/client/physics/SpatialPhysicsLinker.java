@@ -2,13 +2,12 @@ package net.starype.gd.client.physics;
 
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityComponent;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntitySet;
-import net.starype.gd.client.scene.ShapeComponent;
+import net.starype.gd.client.scene.SpatialComponent;
 import net.starype.gd.physics.component.AddedToSpaceComponent;
 
 import java.util.Set;
@@ -18,7 +17,7 @@ public abstract class SpatialPhysicsLinker<T extends EntityComponent> extends Ab
     private EntitySet entities;
 
     public SpatialPhysicsLinker(EntityData entityData) {
-        entities = entityData.getEntities(getBodyComponentType(), ShapeComponent.class, AddedToSpaceComponent.class);
+        entities = entityData.getEntities(getBodyComponentType(), SpatialComponent.class, AddedToSpaceComponent.class);
     }
 
     protected abstract Class<T> getBodyComponentType();
@@ -37,7 +36,7 @@ public abstract class SpatialPhysicsLinker<T extends EntityComponent> extends Ab
         for(Entity entity : removedEntities) {
             T component = entity.get(getBodyComponentType());
             PhysicsControl control = getControlFrom(component);
-            Spatial shape = entity.get(ShapeComponent.class).getShape();
+            Spatial shape = entity.get(SpatialComponent.class).getShape();
             shape.removeControl(control);
         }
     }
@@ -47,11 +46,9 @@ public abstract class SpatialPhysicsLinker<T extends EntityComponent> extends Ab
         for(Entity entity : addedEntities) {
             T component = entity.get(getBodyComponentType());
             PhysicsControl control = getControlFrom(component);
-            ShapeComponent shapeComponent = entity.get(ShapeComponent.class);
-            Spatial shape = shapeComponent.getShape();
-            System.out.println("linking: " + ((RigidBodyControl) control).getPhysicsLocation());
+            SpatialComponent spatialComponent = entity.get(SpatialComponent.class);
+            Spatial shape = spatialComponent.getShape();
             shape.addControl(control);
-            System.out.println("linked: " + ((RigidBodyControl) control).getPhysicsLocation());
         }
     }
 }

@@ -16,7 +16,7 @@ import com.simsilica.es.base.DefaultEntityData;
 import net.starype.client.input.InputComponentCreator;
 import net.starype.gd.client.physics.CharacterLinker;
 import net.starype.gd.client.physics.RigidBodyLinker;
-import net.starype.gd.client.scene.ShapeComponent;
+import net.starype.gd.client.scene.SpatialComponent;
 import net.starype.gd.client.scene.TemporaryRawModelCalls;
 import net.starype.gd.client.scene.Visualizer;
 import net.starype.gd.physics.component.CharacterComponent;
@@ -88,7 +88,7 @@ public class SimplePhysicsTest extends SimpleApplication {
         addShapesForAllCurrent(entityData);
 
         //boxEntity = rigidSpace.addBoxEntity(new Vector3f(0.5f, 0.5f, 0.5f), 80, new Vector3f(0, 15, 0));
-        //entityData.setComponent(boxEntity, new ShapeComponent(TestingGeometries.getCube(assetManager)));
+        //entityData.setComponent(boxEntity, new SpatialComponent(TestingGeometries.getCube(assetManager)));
         rigidSpace.addBoxEntity(new Vector3f(20, 1, 20), 0, new Vector3f(0, 0, 0));
         BetterCharacterControl playerControl = new BetterCharacterControl(0.3f, 1.5f, 80);
         playerControl.setJumpForce(new Vector3f(0, 150, 0));
@@ -106,8 +106,8 @@ public class SimplePhysicsTest extends SimpleApplication {
     }
 
     private void addShapesForAllCurrent(EntityData entityData) {
-        for (Entity entity : entityData.getEntities(ShapeComponent.class)) {
-            Spatial shape = entity.get(ShapeComponent.class).getShape();
+        for (Entity entity : entityData.getEntities(SpatialComponent.class)) {
+            Spatial shape = entity.get(SpatialComponent.class).getShape();
             entityData.setComponent(
                     entity.getId(),
                     new RigidBodyComponent(new RigidBodyControl(CollisionShapeFactory.createBoxShape(shape), 0)));

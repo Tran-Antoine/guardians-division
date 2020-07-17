@@ -3,7 +3,6 @@ package net.starype.gd.client.scene;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.Quaternion;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
@@ -23,7 +22,7 @@ public class Visualizer extends AbstractAppState {
 
     public Visualizer(Node rootNode, EntityData entityData) {
         this.rootNode = rootNode;
-        this.entities = entityData.getEntities(ShapeComponent.class, SpatialPositionComponent.class);
+        this.entities = entityData.getEntities(SpatialComponent.class, SpatialPositionComponent.class);
         this.idMap = new HashMap<>();
     }
 
@@ -57,28 +56,26 @@ public class Visualizer extends AbstractAppState {
     }
 
     private void showEntities(Set<Entity> entities) {
-        System.out.println("rendering");
         for(Entity entity : entities) {
             renderThenPlace(entity);
         }
     }
 
     private void renderThenPlace(Entity entity) {
-        Spatial geometry = createAndRenderEntity(entity);
-        placeEntity(entity, geometry);
+        Spatial spatial = createAndRenderEntity(entity);
+        placeEntity(entity, spatial);
     }
 
     private Spatial createAndRenderEntity(Entity entity) {
-        Spatial geometry = entity.get(ShapeComponent.class).getShape();
-        rootNode.attachChild(geometry);
-        idMap.put(entity.getId(), geometry);
-        return geometry;
+        Spatial spatial = entity.get(SpatialComponent.class).getShape();
+        rootNode.attachChild(spatial);
+        idMap.put(entity.getId(), spatial);
+        return spatial;
     }
 
-    private void placeEntity(Entity entity, Spatial geometry) {
+    private void placeEntity(Entity entity, Spatial spatial) {
         SpatialPositionComponent position = entity.get(SpatialPositionComponent.class);
-        geometry.setLocalTranslation(position.getLocation());
-        Quaternion rot = position.getRotation();
-        geometry.setLocalRotation(rot);
+        spatial.setLocalTranslation(position.getLocation());
+        spatial.setLocalRotation(position.getRotation());
     }
 }
