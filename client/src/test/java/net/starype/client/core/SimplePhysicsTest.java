@@ -13,7 +13,7 @@ import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.es.base.DefaultEntityData;
-import net.starype.client.input.InputComponentCreator;
+import net.starype.gd.client.input.InputComponentCreator;
 import net.starype.gd.client.physics.CharacterLinker;
 import net.starype.gd.client.physics.RigidBodyLinker;
 import net.starype.gd.client.scene.SpatialComponent;

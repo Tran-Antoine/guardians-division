@@ -1,9 +1,11 @@
 package net.starype.gd.client.scene;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
@@ -11,7 +13,11 @@ import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.simsilica.es.EntityData;
+import com.simsilica.es.EntityId;
+import net.starype.gd.client.input.InputComponentCreator;
 import net.starype.gd.client.util.MultiDimensionalIterator;
+import net.starype.gd.physics.component.CharacterComponent;
+import net.starype.gd.physics.component.PhysicsPositionComponent;
 
 import java.util.List;
 import java.util.Random;
@@ -122,5 +128,23 @@ public class TemporaryRawModelCalls {
 
         rootNode.addLight(al);
         rootNode.addLight(dl);
+    }
+
+    public static Node createPlayer(EntityData entityData, InputComponentCreator input) {
+        BetterCharacterControl playerControl = new BetterCharacterControl(0.3f, 1.5f, 80);
+        playerControl.setJumpForce(new Vector3f(0, 150, 0));
+
+        EntityId entity = entityData.createEntity();
+        entityData.setComponents(entity,
+                new CharacterComponent(playerControl),
+                new PhysicsPositionComponent(new Vector3f(0, 18, 0), Quaternion.ZERO));
+
+        input.setEntityData(entityData, entity);
+        input.initListener();
+
+        Node camNode = new Node();
+        camNode.addControl(playerControl);
+
+        return camNode;
     }
 }

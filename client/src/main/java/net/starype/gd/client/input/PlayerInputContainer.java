@@ -1,4 +1,4 @@
-package net.starype.client.input;
+package net.starype.gd.client.input;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;

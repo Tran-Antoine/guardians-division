@@ -8,7 +8,7 @@ import com.simsilica.es.EntityComponent;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntitySet;
 import net.starype.gd.client.scene.SpatialComponent;
-import net.starype.gd.physics.component.AddedToSpaceComponent;
+import net.starype.gd.physics.component.PresentInSpaceComponent;
 
 import java.util.Set;
 
@@ -17,7 +17,7 @@ public abstract class SpatialPhysicsLinker<T extends EntityComponent> extends Ab
     private EntitySet entities;
 
     public SpatialPhysicsLinker(EntityData entityData) {
-        entities = entityData.getEntities(getBodyComponentType(), SpatialComponent.class, AddedToSpaceComponent.class);
+        entities = entityData.getEntities(getBodyComponentType(), SpatialComponent.class, PresentInSpaceComponent.class);
     }
 
     protected abstract Class<T> getBodyComponentType();

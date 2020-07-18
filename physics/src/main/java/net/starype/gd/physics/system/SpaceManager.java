@@ -11,7 +11,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.simsilica.es.*;
-import net.starype.gd.physics.component.AddedToSpaceComponent;
+import net.starype.gd.physics.component.PresentInSpaceComponent;
 import net.starype.gd.physics.component.PhysicsPositionComponent;
 import net.starype.gd.physics.component.RigidBodyComponent;
 
@@ -77,16 +77,14 @@ public abstract class SpaceManager<T extends EntityComponent> implements Physics
     }
 
     private void addToSpace(Set<Entity> addedEntities) {
-        System.out.println("physics");
         for(Entity entity : addedEntities) {
             T component = entity.get(getBodyComponentType());
             PhysicsControl control = getControlFrom(component);
             space.add(control);
             PhysicsPositionComponent position = entity.get(PhysicsPositionComponent.class);
-            System.out.println(position.getLocation());
             setPosition(component, position.getLocation());
             setRotation(component, position.getRotation());
-            source.setComponent(entity.getId(), new AddedToSpaceComponent());
+            source.setComponent(entity.getId(), new PresentInSpaceComponent());
         }
     }
 
