@@ -132,7 +132,7 @@ public class TemporaryRawModelCalls {
 
     public static Node createPlayer(EntityData entityData, InputComponentCreator input) {
         BetterCharacterControl playerControl = new BetterCharacterControl(0.3f, 1.5f, 80);
-        playerControl.setJumpForce(new Vector3f(0, 150, 0));
+        playerControl.setJumpForce(new Vector3f(0, 300, 0));
 
         EntityId entity = entityData.createEntity();
         entityData.setComponents(entity,

@@ -24,7 +24,7 @@ public class CharacterDynamicsHandler extends DynamicsHandler {
             CharacterDynamicsComponent dynamics = entity.get(CharacterDynamicsComponent.class);
             Vector3f warp = dynamics.getWarp();
 
-            float angle = dynamics.getWalkingDirection().angleBetween(body.getWalkDirection());
+            float angle = 0;//dynamics.getWalkingDirection().angleBetween(body.getWalkDirection());
             float speedFactor = body.isOnGround() ? 5 : 5 / (angle + 1);
             body.setWalkDirection(dynamics.getWalkingDirection().mult(speedFactor));
             if(dynamics.isJumpRequested()) { body.jump(); }

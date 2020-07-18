@@ -21,6 +21,7 @@ public class CharacterSpaceManager extends SpaceManager<CharacterComponent> {
     @Override
     protected void setPosition(CharacterComponent component, Vector3f position) {
         component.getBody().warp(position);
+        component.getBody().setGravity(new Vector3f(0, -30, 0));
     }
 
     @Override
