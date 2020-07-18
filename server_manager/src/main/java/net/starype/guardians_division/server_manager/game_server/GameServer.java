@@ -5,13 +5,9 @@ import java.net.Socket;
 
 public class GameServer {
 
-    /**
-     * GameServerPipe
-     */
+    /** GameServerPipe */
     private GameServerPipe communicationPipe;
-    /**
-     * Game data
-     */
+    /** Game data */
     private GameData gameData;
     /**
      * Server jar execution

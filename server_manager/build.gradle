@@ -1,5 +1,12 @@
 group 'net.starype.gd.server_manager'
 
 dependencies {
-    compile project(':server')
+    compile project(':network')
+
+    def jme_version = '3.3.2-stable'
+    //JME3:
+    implementation 'org.jmonkeyengine:jme3-networking:' + jme_version
+
+    //CONFIG:
+    compile "com.google.code.gson:gson:2.8.5"
 }

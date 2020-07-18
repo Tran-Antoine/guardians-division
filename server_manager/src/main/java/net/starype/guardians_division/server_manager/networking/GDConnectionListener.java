@@ -29,7 +29,8 @@ public class GDConnectionListener implements ConnectionListener {
         LOGGER.debug("New connection : [ADDRESS]: {} | [CONNECTIONS COUNT]: {}",
                 connection.getAddress(), server.getConnections().size());
 
-        GameServer gameServer = gameServersManager.findServer(1);
+
+        //GameServer gameServer = gameServersManager.findServer(1);
 
         //TODO: Replace this packet : Send information for the new server to the player
         //connection.send(new GameConnectionPacket(gameServer.getCommunicationPipe().getIP(), gameServer.getCommunicationPipe().getPort()));

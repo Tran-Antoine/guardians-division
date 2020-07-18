@@ -8,9 +8,12 @@ import net.starype.guardians_division.server_manager.game_server.GameServerPipe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.SocketAddress;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,9 +32,9 @@ public class GameServersManager extends BaseAppState {
      */
     private Set<GameServer> servers;
 
-    public GameServersManager(SimpleApplication main, String machineIP) {
+    public GameServersManager(SimpleApplication main) {
         servers = new HashSet<>();
-        this.machineIP = machineIP;
+        this.machineIP = getMachineIP();
         this.configuration = main.getStateManager().getState(ServerManagerConfiguration.class);
     }
 
@@ -105,6 +108,22 @@ public class GameServersManager extends BaseAppState {
     public Optional<GameServer> getServer(SocketAddress address, int port) {
         return servers.stream().filter(gameServer -> gameServer.getCommunicationPipe().getIP().equals(address)
                 && gameServer.getCommunicationPipe().getPort() == port).findFirst();
+    }
+
+    /**
+     * @return String of the machine internet IP.
+     */
+    private String getMachineIP() {
+        String machineIP;
+        try {
+            machineIP = new BufferedReader(new InputStreamReader(new URL("http://checkip.amazonaws.com").openStream())).readLine();
+        } catch (IOException e) {
+            machineIP = "127.0.0.1";
+            LOGGER.warn("Machine IP is inaccessible ! Set IP to 127.0.0.1 !");
+            LOGGER.error(e.getMessage());
+        }
+        LOGGER.debug("Machine IP: " + machineIP);
+        return machineIP;
     }
 
     /**

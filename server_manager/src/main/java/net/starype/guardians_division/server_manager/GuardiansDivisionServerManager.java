@@ -3,6 +3,7 @@ package net.starype.guardians_division.server_manager;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
+import com.jme3.network.service.serializer.ServerSerializerRegistrationsService;
 import com.jme3.system.JmeContext;
 import net.starype.guardians_division.server_manager.networking.IncomingGameServerHandler;
 import net.starype.guardians_division.server_manager.util.GameServersManager;
@@ -11,41 +12,52 @@ import net.starype.guardians_division.server_manager.util.ServerManagerConfigura
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 public class GuardiansDivisionServerManager extends SimpleApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GuardiansDivisionServerManager.class);
-
-    /** Players server instance */
+    /**
+     * Players server instance
+     */
     private Server server;
-    /** GameServers connection handler server instance */
+    /**
+     * GameServers connection handler server instance
+     */
     private IncomingGameServerHandler handler;
 
     GuardiansDivisionServerManager() {
         super.start(JmeContext.Type.Headless);
     }
 
+    public static void main(String... args) {
+        new GuardiansDivisionServerManager();
+    }
+
     @Override
     public void simpleInitApp() {
+        attachStates();
+        PlayersServerRegisterer.registerPackets();
         try {
-            // Initialize ServerManager JSON configuration
-            stateManager.attach(new ServerManagerConfiguration());
-            // Initialize GameServerManager
-            stateManager.attach(new GameServersManager(this, getMachineIP()));
             // Initialize ServerSocket for GameServers and JME Server for players to connect
             loadGameServerCommunicationServer();
             loadPlayerServer();
-            PlayersServerRegisterer.registerPackets();
-            PlayersServerRegisterer.loadListeners(this, server);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PlayersServerRegisterer.loadListeners(this, server);
+    }
+
+    private void attachStates() {
+        // Initialize ServerManager JSON configuration
+        stateManager.attach(new ServerManagerConfiguration());
+        // Initialize GameServerManager
+        stateManager.attach(new GameServersManager(this));
     }
 
     /**
      * Loads the SocketServer for inter-server communications
+     *
      * @throws IOException when server cannot be started
      */
     private void loadGameServerCommunicationServer() throws IOException {
@@ -55,6 +67,7 @@ public class GuardiansDivisionServerManager extends SimpleApplication {
 
     /**
      * Loads the JME Server for player connections
+     *
      * @throws IOException when server cannot be started
      */
     private void loadPlayerServer() throws IOException {
@@ -77,21 +90,5 @@ public class GuardiansDivisionServerManager extends SimpleApplication {
         // TODO: Save existing game servers to handle them after reboot.
         //getStateManager().getState(GameServersManager.class).getServers().forEach(server -> server.getServer().stopServer());
         super.destroy();
-    }
-
-    /**
-     * @return String of the machine internet IP.
-     */
-    private String getMachineIP() {
-        String machineIP;
-        try {
-            machineIP = new BufferedReader(new InputStreamReader(new URL("http://checkip.amazonaws.com").openStream())).readLine();
-        } catch (IOException e) {
-            machineIP = "127.0.0.1";
-            LOGGER.warn("Machine IP is inaccessible ! Set IP to 127.0.0.1 !");
-            LOGGER.error(e.getMessage());
-        }
-        LOGGER.debug("Machine IP: " + machineIP);
-        return machineIP;
     }
 }
