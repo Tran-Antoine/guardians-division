@@ -1,0 +1,5 @@
+dependencies {
+    //JME3:
+    def jme_version = '3.3.2-stable'
+    implementation 'org.jmonkeyengine:jme3-networking:' + jme_version
+}
