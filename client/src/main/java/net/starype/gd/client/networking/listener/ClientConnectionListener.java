@@ -1,4 +1,4 @@
-package net.starype.gd.client.core.networking.listener;
+package net.starype.gd.client.networking.listener;
 
 import com.jme3.network.*;
 import net.starype.guardians_division.network.server_manager.IdentificationPacket;

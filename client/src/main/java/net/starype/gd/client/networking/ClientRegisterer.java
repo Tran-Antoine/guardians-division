@@ -1,9 +1,9 @@
-package net.starype.gd.client.core.networking;
+package net.starype.gd.client.networking;
 
 import com.jme3.network.Client;
 import com.jme3.network.serializing.Serializer;
-import net.starype.gd.client.core.networking.listener.ClientConnectionListener;
-import net.starype.gd.client.core.networking.listener.IdentificationListener;
+import net.starype.gd.client.networking.listener.ClientConnectionListener;
+import net.starype.gd.client.networking.listener.IdentificationListener;
 import net.starype.guardians_division.network.server_manager.IdentificationAnswerPacket;
 import net.starype.guardians_division.network.server_manager.IdentificationPacket;
 import org.slf4j.Logger;
