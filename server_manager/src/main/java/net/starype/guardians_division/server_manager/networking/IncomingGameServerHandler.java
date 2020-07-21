@@ -1,10 +1,9 @@
 package net.starype.guardians_division.server_manager.networking;
 
-import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.AppState;
+import com.jme3.app.state.AppStateManager;
 import net.starype.guardians_division.server_manager.game_server.GameServer;
 import net.starype.guardians_division.server_manager.util.GameServersManager;
-import net.starype.guardians_division.server_manager.util.ServerManagerConfiguration;
+import net.starype.guardians_division.server_manager.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,16 +16,16 @@ public class IncomingGameServerHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IncomingGameServerHandler.class);
 
-    private SimpleApplication main;
+    private AppStateManager appStateManager;
 
     private ServerSocket server;
     private Thread handlerThread;
 
     private boolean running;
 
-    public IncomingGameServerHandler(SimpleApplication main) throws IOException {
-        this.main = main;
-        server = new ServerSocket(getManager(ServerManagerConfiguration.class).getGameServerListenerPort());
+    public IncomingGameServerHandler(AppStateManager appStateManager) throws IOException {
+        this.appStateManager = appStateManager;
+        server = new ServerSocket(appStateManager.getState(Configuration.class).getGameServerHandlerPort());
     }
 
     /*
@@ -43,7 +42,7 @@ public class IncomingGameServerHandler {
                     LOGGER.debug("REMOTE ADDRESS: {}", gameServerClient.getRemoteSocketAddress().toString());
                     LOGGER.debug("PORT: {}", gameServerClient.getPort());
 
-                    Optional<GameServer> gameServer = getManager(GameServersManager.class)
+                    Optional<GameServer> gameServer = appStateManager.getState(GameServersManager.class)
                             .getServer(gameServerClient.getRemoteSocketAddress(), gameServerClient.getPort());
 
                     LOGGER.debug("IS SERVER EXISTING? {}", gameServer.isPresent());
@@ -56,11 +55,7 @@ public class IncomingGameServerHandler {
             }
         });
         handlerThread.start();
-        LOGGER.info("ServerSocket started ! Listening to connections...");
-    }
-
-    private <T extends AppState> T getManager(Class<T> state){
-        return main.getStateManager().getState(state);
+        LOGGER.debug("Listening to connections...");
     }
 
     public void close() {

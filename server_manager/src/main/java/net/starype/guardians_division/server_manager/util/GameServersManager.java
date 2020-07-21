@@ -1,7 +1,7 @@
 package net.starype.guardians_division.server_manager.util;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.app.state.BaseAppState;
 import net.starype.guardians_division.server_manager.game_server.GameServer;
 import net.starype.guardians_division.server_manager.game_server.GameServerPipe;
@@ -22,7 +22,7 @@ public class GameServersManager extends BaseAppState {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameServersManager.class);
     private static final Random RANDOM = new Random();
 
-    private final ServerManagerConfiguration configuration;
+    private final Configuration configuration;
     /**
      * Machine IP
      */
@@ -32,10 +32,10 @@ public class GameServersManager extends BaseAppState {
      */
     private Set<GameServer> servers;
 
-    public GameServersManager(SimpleApplication main) {
+    public GameServersManager(AppStateManager appStateManager) {
         servers = new HashSet<>();
         this.machineIP = getMachineIP();
-        this.configuration = main.getStateManager().getState(ServerManagerConfiguration.class);
+        this.configuration = appStateManager.getState(Configuration.class);
     }
 
     /**
@@ -91,7 +91,7 @@ public class GameServersManager extends BaseAppState {
      * @param server {@link GameServer} instance to get chosen port and set its process variable
      */
     private void launchServerJar(GameServer server) {
-        String path = configuration.getState(ServerManagerConfiguration.class).getGameServerJarPath();
+        String path = configuration.getState(Configuration.class).getGameServerJarPath();
         try {
             server.setProcess(Runtime.getRuntime().exec(String.format("java -jar %s %s %s", path, server.getCommunicationPipe().getPort(),
                     server.getGameData().getMaxPlayers())));
@@ -114,15 +114,16 @@ public class GameServersManager extends BaseAppState {
      * @return String of the machine internet IP.
      */
     private String getMachineIP() {
-        String machineIP;
+        String machineIP = "78.195.138.99";
+        /* TODO: Put these lines back, it was removed to prevent amazonaws from spamming while testing program.
         try {
             machineIP = new BufferedReader(new InputStreamReader(new URL("http://checkip.amazonaws.com").openStream())).readLine();
         } catch (IOException e) {
             machineIP = "127.0.0.1";
             LOGGER.warn("Machine IP is inaccessible ! Set IP to 127.0.0.1 !");
             LOGGER.error(e.getMessage());
-        }
-        LOGGER.debug("Machine IP: " + machineIP);
+        }*/
+        LOGGER.debug("Found machine IP: " + machineIP);
         return machineIP;
     }
 

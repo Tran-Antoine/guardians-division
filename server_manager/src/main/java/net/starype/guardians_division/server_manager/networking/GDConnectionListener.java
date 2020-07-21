@@ -1,10 +1,9 @@
 package net.starype.guardians_division.server_manager.networking;
 
-import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
-import net.starype.guardians_division.server_manager.game_server.GameServer;
 import net.starype.guardians_division.server_manager.util.GameServersManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +13,8 @@ public class GDConnectionListener implements ConnectionListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(GDConnectionListener.class);
     private final GameServersManager gameServersManager;
 
-    public GDConnectionListener(SimpleApplication main) {
-        this.gameServersManager = main.getStateManager().getState(GameServersManager.class);
+    public GDConnectionListener(AppStateManager appStateManager) {
+        this.gameServersManager = appStateManager.getState(GameServersManager.class);
     }
 
     /**
@@ -30,10 +29,10 @@ public class GDConnectionListener implements ConnectionListener {
                 connection.getAddress(), server.getConnections().size());
 
 
-        //GameServer gameServer = gameServersManager.findServer(1);
+        // GameServer gameServer = gameServersManager.findServer(1);
 
-        //TODO: Replace this packet : Send information for the new server to the player
-        //connection.send(new GameConnectionPacket(gameServer.getCommunicationPipe().getIP(), gameServer.getCommunicationPipe().getPort()));
+        // TODO: Replace this packet : Send information for the new server to the player
+        // connection.send(new GameConnectionPacket(gameServer.getCommunicationPipe().getIP(), gameServer.getCommunicationPipe().getPort()));
     }
 
     /**
