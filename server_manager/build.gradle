@@ -9,4 +9,8 @@ dependencies {
 
     //CONFIG:
     compile "com.google.code.gson:gson:2.8.5"
+
+    //JDBC DRIVER:
+    compile 'mysql:mysql-connector-java:8.0.21'
+
 }

@@ -4,3 +4,4 @@
 *.dylib
 *.class
 */out
+server_manager/src/main/resources/sql.json
