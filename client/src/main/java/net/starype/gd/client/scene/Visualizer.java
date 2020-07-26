@@ -62,7 +62,7 @@ public class Visualizer extends AbstractAppState {
     }
 
     private void renderThenPlace(Entity entity) {
-        Spatial spatial = createAndRenderEntity(entity);
+        Spatial spatial = renderEntity(entity);
         placeEntity(entity, spatial);
     }
 
