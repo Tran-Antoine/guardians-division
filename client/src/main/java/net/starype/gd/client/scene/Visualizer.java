@@ -66,7 +66,8 @@ public class Visualizer extends AbstractAppState {
         placeEntity(entity, spatial);
     }
 
-    private Spatial createAndRenderEntity(Entity entity) {
+    private Spatial renderEntity(Entity entity) {
+
         Spatial spatial = entity.get(SpatialComponent.class).getShape();
         rootNode.attachChild(spatial);
         idMap.put(entity.getId(), spatial);
