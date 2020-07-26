@@ -3,12 +3,12 @@ package net.starype.gd.client.scene;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.simsilica.es.*;
+import com.simsilica.es.Entity;
+import com.simsilica.es.EntityData;
+import com.simsilica.es.EntityId;
+import com.simsilica.es.EntitySet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +20,9 @@ public class Visualizer extends AbstractAppState {
     private EntitySet entities;
     private Map<EntityId, Spatial> idMap;
 
-    public Visualizer(Node rootNode, EntitySet entities) {
+    public Visualizer(Node rootNode, EntityData entityData) {
         this.rootNode = rootNode;
-        this.entities = entities;
+        this.entities = entityData.getEntities(SpatialComponent.class, SpatialPositionComponent.class);
         this.idMap = new HashMap<>();
     }
 
@@ -62,23 +62,21 @@ public class Visualizer extends AbstractAppState {
     }
 
     private void renderThenPlace(Entity entity) {
-        Spatial geometry = createAndRenderEntity(entity);
-        placeEntity(entity, geometry);
+        Spatial spatial = createAndRenderEntity(entity);
+        placeEntity(entity, spatial);
     }
 
-    private Spatial createAndRenderEntity(Entity entity) {
-        ShapeComponent shape = entity.get(ShapeComponent.class);
-        Spatial geometry = new Geometry(shape.getName(), shape.getShape());
-        geometry.setMaterial(shape.getMaterial());
-        rootNode.attachChild(geometry);
-        idMap.put(entity.getId(), geometry);
-        return geometry;
+    private Spatial renderEntity(Entity entity) {
+
+        Spatial spatial = entity.get(SpatialComponent.class).getShape();
+        rootNode.attachChild(spatial);
+        idMap.put(entity.getId(), spatial);
+        return spatial;
     }
 
-    private void placeEntity(Entity entity, Spatial geometry) {
-        PositionComponent position = entity.get(PositionComponent.class);
-        geometry.setLocalTranslation(position.getLocation());
-        Vector3f rot = position.getRotation();
-        geometry.setLocalRotation(new Quaternion().fromAngles(rot.x, rot.y, rot.z));
+    private void placeEntity(Entity entity, Spatial spatial) {
+        SpatialPositionComponent position = entity.get(SpatialPositionComponent.class);
+        spatial.setLocalTranslation(position.getLocation());
+        spatial.setLocalRotation(position.getRotation());
     }
 }

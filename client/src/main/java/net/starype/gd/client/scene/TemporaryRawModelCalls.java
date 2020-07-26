@@ -1,10 +1,11 @@
 package net.starype.gd.client.scene;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
@@ -12,7 +13,11 @@ import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.simsilica.es.EntityData;
+import com.simsilica.es.EntityId;
+import net.starype.gd.client.input.InputComponentCreator;
 import net.starype.gd.client.util.MultiDimensionalIterator;
+import net.starype.gd.physics.component.CharacterComponent;
+import net.starype.gd.physics.component.PhysicsPositionComponent;
 
 import java.util.List;
 import java.util.Random;
@@ -33,50 +38,47 @@ public class TemporaryRawModelCalls {
 
         GDModelBuilder builder = new GDModelBuilder(assetManager, entityData, FLOOR_LENGTH);
 
-        float corner = builder.floorLength() / 2;
+        float corner = builder.floorLength() / 2 + 1;
+
+        String floorTextureName = "carpet_1.jpg";
 
         builder.createTexturedPlane(
-                new Vector3f(-corner,0, corner),
-                new Vector3f(-FastMath.HALF_PI, 0, 0),
-                "carpet_1.jpg");
+                new Vector3f(0,-1, 0),
+                GDModelBuilder.BOTTOM_ROTATION,
+                floorTextureName
+        );
 
         builder.createTexturedPlane(
-                new Vector3f(-corner, 2*corner, -corner),
-                new Vector3f(FastMath.HALF_PI, 0, 0),
-                "carpet_1.jpg"
+                new Vector3f(0, 2*corner - 1, 0),
+                GDModelBuilder.TOP_ROTATION,
+                floorTextureName
         );
 
         String wallTextureName = "carpet_0.jpg";
         builder.createTexturedPlane(
-                new Vector3f(-corner, 0, -corner),
-                new Vector3f(),
+                new Vector3f(0, corner - 1, -corner),
+                GDModelBuilder.BACK_ROTATION,
                 wallTextureName);
 
         builder.createTexturedPlane(
-                new Vector3f(corner, 0, -corner),
-                new Vector3f(0, -FastMath.HALF_PI, 0),
+                new Vector3f(corner, corner - 1, 0),
+                GDModelBuilder.LEFT_ROTATION,
                 wallTextureName);
 
         builder.createTexturedPlane(
-                new Vector3f(-corner,0,corner),
-                new Vector3f(0, FastMath.HALF_PI, 0),
+                new Vector3f(-corner, corner - 1, 0),
+                GDModelBuilder.RIGHT_ROTATION,
                 wallTextureName);
 
         builder.createTexturedPlane(
-                new Vector3f(corner, 0, corner),
-                new Vector3f(0, FastMath.PI, 0),
+                new Vector3f(0, corner - 1, corner),
+                GDModelBuilder.FRONT_ROTATION,
                 wallTextureName);
 
         String base = "carpet_2.jpg";
         String top = "carpet_3.jpg";
+
         createRandomPillars(base, top, builder.floorLength(), builder);
-        /*builder.createPillar(new Vector2f(2,2), 0.7f, 2, base, top);
-        builder.createPillar(new Vector2f(-5, -3), 1, 1.5f, base, top);
-        builder.createPillar(new Vector2f(7, 0), 0.4f, 3, base, top);
-        builder.createPillar(new Vector2f(5, -2), 0.8f, 1.6f, base, top);
-        builder.createPillar(new Vector2f(1, -3), 0.6f, 0.6f, base, top);
-        builder.createPillar(new Vector2f(-2, 3), 0.9f, 1f, base, top);
-        builder.createPillar(new Vector2f(0, 0), 0.7f, 2.2f, base, top);*/
     }
 
     private static void createRandomPillars(String base, String top, float floorLength, GDModelBuilder builder) {
@@ -126,5 +128,23 @@ public class TemporaryRawModelCalls {
 
         rootNode.addLight(al);
         rootNode.addLight(dl);
+    }
+
+    public static Node createPlayer(EntityData entityData, InputComponentCreator input) {
+        BetterCharacterControl playerControl = new BetterCharacterControl(0.3f, 1.5f, 80);
+        playerControl.setJumpForce(new Vector3f(0, 300, 0));
+
+        EntityId entity = entityData.createEntity();
+        entityData.setComponents(entity,
+                new CharacterComponent(playerControl),
+                new PhysicsPositionComponent(new Vector3f(0, 18, 0), Quaternion.ZERO));
+
+        input.setEntityData(entityData, entity);
+        input.initListener();
+
+        Node camNode = new Node();
+        camNode.addControl(playerControl);
+
+        return camNode;
     }
 }
