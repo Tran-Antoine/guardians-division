@@ -1,0 +1,16 @@
+group 'net.starype.gd.root_server'
+
+dependencies {
+    compile project(':network')
+
+    //JME3:
+    def jme_version = '3.3.2-stable'
+    implementation 'org.jmonkeyengine:jme3-networking:' + jme_version
+
+    //CONFIG:
+    compile "com.google.code.gson:gson:2.8.5"
+
+    //DATABASE
+    compile 'mysql:mysql-connector-java:8.0.21'
+    compile 'org.hibernate:hibernate-core:5.4.19.Final'
+}

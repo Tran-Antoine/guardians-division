@@ -4,8 +4,6 @@ dependencies {
     compile project(':network')
 
     def jme_version = '3.3.2-stable'
-    //JME3:
+    // JME3:
     implementation 'org.jmonkeyengine:jme3-networking:' + jme_version
-
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.28'
 }
